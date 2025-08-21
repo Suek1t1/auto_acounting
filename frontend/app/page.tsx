@@ -55,11 +55,27 @@ export default function TopPage(): React.JSX.Element {
 
     setIsLoading(true);
     try {
-      // ここで会計処理ロジックを実装
-      await new Promise(resolve => setTimeout(resolve, 1000)); // 処理時間のシミュレーション
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:8000';
+      const formData = new FormData();
+      formData.append('file', currentImage.file, currentImage.fileName);
+
+      const response = await fetch(`${backendUrl}/process/binarize`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`handleAccounting: APIエラー status=${response.status} body=${text}`);
+      }
+
+      const result = await response.json();
+      console.log('二値化結果:', result);
+
       router.push('/result');
     } catch (error) {
       console.error('会計処理中にエラーが発生しました:', error);
+      alert(`会計処理でエラーが発生しました。詳細: ${(error as Error).message}`);
     } finally {
       setIsLoading(false);
     }
