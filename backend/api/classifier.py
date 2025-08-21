@@ -37,6 +37,7 @@ def predict_array(image_array, model_path):
 if __name__ == "__main__":
     # --- 画像データ読み込み ---
     data, labels = [], []
+    INPUT_CHANNELS = 3
 
     print("ユニットテスト用画像をロードしています...")
     base_path = os.path.join(os.path.dirname(__file__), "../models/unittest_pictures")
